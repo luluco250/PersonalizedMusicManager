@@ -10,19 +10,19 @@ namespace PersonalizedMusicManager.CLI
 		const int ExitError = 1;
 		const int ExitConfig = 2;
 
-		static async Task<int> Main()
+		static int Main()
 		{
 			try
 			{
 				var manager = new MusicManager();
 
-				if (!(await manager.TryLoadMusicDataAsync()))
+				if (!manager.TryLoadMusicDataAsync().Result)
 				{
 					Console.WriteLine(
 						"No music configuration file found, creating one...");
 
-					await manager.CreateMusicDataAsync();
-					await manager.SaveMusicDataAsync();
+					manager.CreateMusicDataAsync().Wait();
+					manager.SaveMusicDataAsync().Wait();
 
 					Console.WriteLine(
 						"Done. Configure the paths to your music folder and " +
@@ -36,13 +36,13 @@ namespace PersonalizedMusicManager.CLI
 				Console.WriteLine("Loaded music data.");
 				Console.Out.Flush();
 
-				if (!(await manager.TryLoadPlaylistsDataAsync()))
+				if (!manager.TryLoadPlaylistsDataAsync().Result)
 				{
 					Console.WriteLine(
 						"No playlists configuration file found, creating one...");
 
-					await manager.CreatePlaylistsDataAsync();
-					await manager.SavePlaylistsDataAsync();
+					manager.CreatePlaylistsDataAsync().Wait();
+					manager.SavePlaylistsDataAsync().Wait();
 
 					Console.WriteLine(
 						"Done. You can now configure your music playlists in " +
@@ -57,18 +57,18 @@ namespace PersonalizedMusicManager.CLI
 				Console.WriteLine("Synchronizing music files...");
 				Console.Out.Flush();
 
-				await manager.SyncFoldersAsync();
+				manager.SyncFoldersAsync().Wait();
 				Console.WriteLine("Done, enjoy your music!");
 
 				return ExitSuccess;
 			}
 			catch (NotImplementedException)
 			{
-				await Console.Error.WriteLineAsync("Operation not implemented");
+				Console.Error.WriteLine("Operation not implemented");
 			}
 			catch (Exception e)
 			{
-				await Console.Error.WriteLineAsync($"Fatal error: {e.Message}");
+				Console.Error.WriteLine($"Fatal error: {e.Message}");
 			}
 
 			return ExitError;

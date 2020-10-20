@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PersonalizedMusicManager.Core
@@ -90,23 +91,30 @@ namespace PersonalizedMusicManager.Core
 				throw new InvalidOperationException(
 					"Playlists data must be created or loaded before syncing folders");
 
-			var tasks = new List<Task>();
+			var tasks = new List<Task>(PlaylistsData.Select(x => Task.Run(() =>
+			{
+				var folder = Path.Combine(MusicData.PlaylistsPath, x.Value.Folder);
+				DeleteMusicFromPlaylistFolder(folder, x.Value.Filename);
+			})));
 
-			foreach (var (name, music) in MusicData.Playlists)
-				tasks.Add(Task.Run(() =>
-				{
-					if (!PlaylistsData.TryGetValue(name, out var info))
-						throw new Exception($"Playlist \"{name}\" doesn't exist");
+			await Task.WhenAll(tasks);
 
-					if (music.Count > info.MaxTracks)
-						throw new Exception(
-							$"Playlist \"{name}\" exceeds the maximum track " +
-							$"amount allowed of {info.MaxTracks}");
+			tasks.Clear();
+			tasks.AddRange(MusicData.Playlists.Select(x => Task.Run(() =>
+			{
+				var (name, music) = (x.Key, x.Value);
 
-					var folder = Path.Combine(MusicData.PlaylistsPath, info.Folder);
-					DeleteMusicFromPlaylistFolder(folder, info.Filename);
-					CopyMusicToPlaylistFolder(MusicData.MusicPath, folder, info.Filename, music);
-				}));
+				if (!PlaylistsData.TryGetValue(name, out var info))
+					throw new Exception($"Playlist \"{name}\" doesn't exist");
+
+				if (music.Count > info.MaxTracks)
+					throw new Exception(
+						$"Playlist \"{name}\" exceeds the maximum track " +
+						$"amount allowed of {info.MaxTracks}");
+
+				var folder = Path.Combine(MusicData.PlaylistsPath, info.Folder);
+				CopyMusicToPlaylistFolder(MusicData.MusicPath, folder, info.Filename, music);
+			})));
 
 			await Task.WhenAll(tasks);
 		}
