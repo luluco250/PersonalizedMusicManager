@@ -3,40 +3,63 @@
     "tasks": [
         {
             "label": "Build Debug",
-            "command": "dotnet",
             "type": "process",
+            "command": "dotnet",
             "args": [
                 "build",
                 "${workspaceFolder}/PersonalizedMusicManager.sln",
-                "-o",
-                "${workspaceFolder}/bin/Debug",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary",
-                "/nologo",
-                "/p:Configuration=Debug"
+                "-o", "${workspaceFolder}/bin/Debug",
+                "-c", "Debug",
+                "--nologo",
+                "-property:GenerateFullPaths=true",
+                "-consoleLoggerParameters:NoSummary",
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         },
         {
             "label": "Build Release",
-            "command": "dotnet",
             "type": "process",
+            "command": "dotnet",
             "args": [
                 "build",
                 "${workspaceFolder}/PersonalizedMusicManager.sln",
-                "-o",
-                "${workspaceFolder}/bin/Release",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary",
-                "/nologo",
-                "/p:Configuration=Release"
+                "-o", "${workspaceFolder}/bin/Release",
+                "-c", "Release",
+                "--nologo",
+                "-property:GenerateFullPaths=true",
+                "-consoleLoggerParameters:NoSummary",
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
+            "group": "build"
+        },
+        {
+            "label": "Publish Win x64",
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "publish",
+                "${workspaceFolder}/PersonalizedMusicManager.CLI/PersonalizedMusicManager.CLI.csproj",
+                "-o", "${workspaceFolder}/bin/win-x64",
+                "-c", "Release",
+                "-r", "win-x64",
+                "--self-contained", "true",
+                "-p:PublishReadyToRun=true",
+                "-p:PublishSingleFile=true",
+                "--nologo",
+                "-p:GenerateFullPaths=true",
+                "-consoleLoggerParameters:NoSummary",
+            ],
+            "problemMatcher": "$msCompile",
+            "group": "build"
         },
         {
             "label": "Clean",
-            "command": "dotnet",
             "type": "process",
+            "command": "dotnet",
             "args": [
                 "clean",
                 "${workspaceFolder}/PersonalizedMusicManager.sln"

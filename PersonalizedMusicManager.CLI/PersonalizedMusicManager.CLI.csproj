@@ -7,6 +7,7 @@
 <PropertyGroup>
 	<OutputType>Exe</OutputType>
 	<TargetFramework>netcoreapp3.1</TargetFramework>
+	<PreserveCompilationContext>false</PreserveCompilationContext>
 	<LangVersion>8</LangVersion>
 	<Nullable>enable</Nullable>
 	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -15,6 +16,11 @@
 
 <PropertyGroup Condition="$(Configuration) == Release">
 	<Optimize>true</Optimize>
+	<DebugType>none</DebugType>
+	<PublishReadyToRun>true</PublishReadyToRun>
+	<PublishSingleFile>true</PublishSingleFile>
+	<PublishTrimmed>true</PublishTrimmed>
+	<TrimMode>link</TrimMode>
 </PropertyGroup>
 
 </Project>

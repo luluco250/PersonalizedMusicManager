@@ -2,6 +2,7 @@
 
 <PropertyGroup>
 	<TargetFramework>netcoreapp3.1</TargetFramework>
+	<PreserveCompilationContext>false</PreserveCompilationContext>
 	<LangVersion>8</LangVersion>
 	<Nullable>enable</Nullable>
 	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
